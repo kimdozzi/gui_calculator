@@ -22,8 +22,8 @@ python -m pip install pyqt5
 Please read [CONTRIBUTING.md](https://github.com/kimdozzi/gui_calculator/blob/main/CONTRIBUTIONG.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **studyingrabbit** - initail work - [studyingrabbit](https://studyingrabbit.tistory.com/23)
+* **Dohyung Kim** - init repository - [this repository](https://github.com/kimdozzi/gui_calculator)
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
