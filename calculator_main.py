@@ -1,8 +1,14 @@
 import sys
 from PyQt5.QtWidgets import *
 
+left_number = 0
+mid_op = ''
+right_number = 0
+flag = False
+
 
 class Main(QDialog):
+
     def __init__(self):
         super().__init__()
         self.init_ui()
@@ -19,30 +25,38 @@ class Main(QDialog):
         # label_number 레이아웃에 수식, 답 위젯을 추가
         # 수식 입력과 답 출력을 위한 LineEdit 위젯 생성
         label_number = QLabel("Number: ")
-        self.number_display = QLineEdit("")
+        self.number_display = QLineEdit("0")
         layout_equation_solution.addRow(label_number, self.number_display)
 
         # =, clear, backspace 버튼 생성
         # =, clear, backspace 버튼 클릭 시 시그널 설정
+        button_Percentage = QPushButton("%")
+        button_Percentage.clicked.connect(self.button_Percentage_clicked)
+
+        button_clear = QPushButton("C")
+        button_clear.clicked.connect(self.button_clear_clicked)
+
+        button_clear2 = QPushButton("CE")
+        button_clear2.clicked.connect(self.button_clear_clicked)
+
         button_equal = QPushButton("=")
         button_equal.clicked.connect(self.button_equal_clicked)
 
-        button_clear = QPushButton("Clear")
-        button_clear.clicked.connect(self.button_clear_clicked)
-
-        button_backspace = QPushButton("Backspace")
+        button_backspace = QPushButton("BackSpace")
         button_backspace.clicked.connect(self.button_backspace_clicked)
 
         # =, clear, backspace 버튼을 layout_clear_equal 레이아웃에 추가
+        layout_number.addWidget(button_Percentage, 0, 0)
         layout_number.addWidget(button_clear, 0, 1)
-        layout_number.addWidget(button_backspace, 0, 2)
-        layout_number.addWidget(button_equal, 0, 3)
+        layout_number.addWidget(button_clear2, 0, 2)
+        layout_number.addWidget(button_backspace, 0, 3)
+        layout_number.addWidget(button_equal, 0, 4)
 
         # 숫자 버튼 생성하고, layout_number 레이아웃에 추가
         # 각 숫자 버튼을 클릭했을 때, 숫자가 수식창에 입력 될 수 있도록 시그널 설정
         number_button_dict = {}
 
-        for number in range(9, -1, -1):
+        for number in range(10):
             number_button_dict[number] = QPushButton(str(number))
             number_button_dict[number].clicked.connect(lambda state, num=number:
                                                        self.number_button_clicked(num))
@@ -97,37 +111,64 @@ class Main(QDialog):
         main_layout.addLayout(layout_number, 2, 0)
         main_layout.addLayout(layout_operation, 3, 0)
         self.setLayout(main_layout)
+
         self.show()
 
     #################
     ### functions ###
     #################
-    def number_button_clicked(self, num):
+
+    def button_Percentage_clicked(self):
         equation = self.equation.text()
-        equation += str(num)
+        equation = round((equation / 100), 2)
         self.equation.setText(equation)
+
+    def number_button_clicked(self, num):
+        equation = self.number_display.text()
+        if int(equation) + int(num) == 0:
+            self.number_display.setText("0")
+        else:
+            if equation[0] == '0':
+                equation = equation[1:] + str(num)
+            else:
+                equation += str(num)
+            self.number_display.setText(equation)
 
     def button_operation_clicked(self, operation):
-        equation = self.equation.text()
-        equation += operation
-        self.equation.setText(equation)
+        global left_number, mid_op, flag
+        equation = self.number_display.text()
+        left_number += int(equation)
+        mid_op += operation
+        equation = "0"
+        flag = True
+        self.number_display.setText(equation)
 
     def button_equal_clicked(self):
-        equation = self.equation.text()
-        solution = eval(equation)
-        self.solution.setText(str(solution))
+        equation = self.number_display.text()
+        global flag, left_number, mid_op
+        if flag:
+            if mid_op == '+':
+                equation = left_number + int(equation)
+            elif mid_op == '-':
+                equation = left_number - int(equation)
+            elif mid_op == 'x':
+                equation = left_number * int(equation)
+            elif mid_op == '/':
+                equation = left_number / int(equation)
+
+        self.number_display.setText(str(equation))
 
     def button_clear_clicked(self):
-        self.equation.setText("")
-        self.solution.setText("")
+        self.number_display.setText("0")
 
     def button_backspace_clicked(self):
-        equation = self.equation.text()
+        equation = self.number_display.text()
         equation = equation[:-1]
-        self.equation.setText(equation)
+        self.number_display.setText(equation)
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     main = Main()
+
     sys.exit(app.exec_())
