@@ -16,18 +16,11 @@ class Main(QDialog):
         layout_operation = QGridLayout()
         layout_equation_solution = QFormLayout()
 
-        label_equation = QLabel("Equation: ")
-        label_solution = QLabel("Solution: ")
-        self.equation = QLineEdit("")
-        self.solution = QLineEdit("")
-        # layout_equation_solution 레이아웃에 수식, 답 위젯을 추가
-        layout_equation_solution.addRow(label_equation, self.equation)
-        layout_equation_solution.addRow(label_solution, self.solution)
-
+        # label_number 레이아웃에 수식, 답 위젯을 추가
         # 수식 입력과 답 출력을 위한 LineEdit 위젯 생성
-        # label_number = QLabel("Number: ")
-        # self.number_display = QLineEdit("")
-        # layout_equation_solution.addRow(label_number, self.number_display)
+        label_number = QLabel("Number: ")
+        self.number_display = QLineEdit("")
+        layout_equation_solution.addRow(label_number, self.number_display)
 
         # =, clear, backspace 버튼 생성
         # =, clear, backspace 버튼 클릭 시 시그널 설정
