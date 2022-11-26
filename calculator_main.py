@@ -8,7 +8,7 @@ class Main(QDialog):
         self.init_ui()
 
     def init_ui(self):
-        main_layout = QVBoxLayout()
+        main_layout = QGridLayout()
 
         # 각 위젯을 배치할 레이아웃을 미리 만들어 둠
         layout_clear_equal = QGridLayout()
@@ -16,15 +16,18 @@ class Main(QDialog):
         layout_operation = QGridLayout()
         layout_equation_solution = QFormLayout()
 
-        # 수식 입력과 답 출력을 위한 LineEdit 위젯 생성
         label_equation = QLabel("Equation: ")
         label_solution = QLabel("Solution: ")
         self.equation = QLineEdit("")
         self.solution = QLineEdit("")
-
         # layout_equation_solution 레이아웃에 수식, 답 위젯을 추가
         layout_equation_solution.addRow(label_equation, self.equation)
         layout_equation_solution.addRow(label_solution, self.solution)
+
+        # 수식 입력과 답 출력을 위한 LineEdit 위젯 생성
+        # label_number = QLabel("Number: ")
+        # self.number_display = QLineEdit("")
+        # layout_equation_solution.addRow(label_number, self.number_display)
 
         # =, clear, backspace 버튼 생성
         # =, clear, backspace 버튼 클릭 시 시그널 설정
@@ -96,10 +99,10 @@ class Main(QDialog):
         layout_operation.addWidget(button_division)
 
         # 각 레이아웃을 main_layout 레이아웃에 추가
-        main_layout.addLayout(layout_equation_solution)
-        main_layout.addLayout(layout_clear_equal)
-        main_layout.addLayout(layout_number)
-        main_layout.addLayout(layout_operation)
+        main_layout.addLayout(layout_equation_solution, 0, 0)
+        main_layout.addLayout(layout_clear_equal, 1, 0)
+        main_layout.addLayout(layout_number, 2, 0)
+        main_layout.addLayout(layout_operation, 3, 0)
         self.setLayout(main_layout)
         self.show()
 
