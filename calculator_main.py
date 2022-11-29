@@ -3,12 +3,11 @@ from PyQt5.QtWidgets import *
 
 left_number = 0
 mid_op = ''
-right_number = 0
 flag = False
+stk = []
 
 
 class Main(QDialog):
-
     def __init__(self):
         super().__init__()
         self.init_ui()
@@ -28,8 +27,8 @@ class Main(QDialog):
         self.number_display = QLineEdit("0")
         layout_equation_solution.addRow(label_number, self.number_display)
 
-        # =, clear, backspace 버튼 생성
-        # =, clear, backspace 버튼 클릭 시 시그널 설정
+        # %, =, clear, backspace 버튼 생성
+        # %, =, clear, backspace 버튼 클릭 시 시그널 설정
         button_Percentage = QPushButton("%")
         button_Percentage.clicked.connect(self.button_Percentage_clicked)
 
@@ -45,7 +44,7 @@ class Main(QDialog):
         button_backspace = QPushButton("BackSpace")
         button_backspace.clicked.connect(self.button_backspace_clicked)
 
-        # =, clear, backspace 버튼을 layout_clear_equal 레이아웃에 추가
+        # %, =, clear, backspace 버튼을 layout_clear_equal 레이아웃에 추가
         layout_number.addWidget(button_Percentage, 0, 0)
         layout_number.addWidget(button_clear, 0, 1)
         layout_number.addWidget(button_clear2, 0, 2)
@@ -58,8 +57,8 @@ class Main(QDialog):
 
         for number in range(10):
             number_button_dict[number] = QPushButton(str(number))
-            number_button_dict[number].clicked.connect(lambda state, num=number:
-                                                       self.number_button_clicked(num))
+            number_button_dict[number].clicked.connect(
+                lambda state, num=number: self.number_button_clicked(num))
             if number > 0:
                 x, y = divmod(number-1, 3)
                 layout_number.addWidget(
@@ -124,6 +123,9 @@ class Main(QDialog):
         self.equation.setText(equation)
 
     def number_button_clicked(self, num):
+        temp = ""
+        if stk:  # 이전에 계산한 값이 있는경우 또는 숫자를 입력 후 연산자를 입력하지 않고, '='를 누른 경우
+            temp += stk.pop()
         equation = self.number_display.text()
         if int(equation) + int(num) == 0:
             self.number_display.setText("0")
@@ -132,7 +134,7 @@ class Main(QDialog):
                 equation = equation[1:] + str(num)
             else:
                 equation += str(num)
-            self.number_display.setText(equation)
+            self.number_display.setText(equation[len(temp):])
 
     def button_operation_clicked(self, operation):
         global left_number, mid_op, flag
@@ -145,18 +147,23 @@ class Main(QDialog):
 
     def button_equal_clicked(self):
         equation = self.number_display.text()
-        global flag, left_number, mid_op
+        global flag, left_number, mid_op, stk
+
         if flag:
             if mid_op == '+':
                 equation = left_number + int(equation)
             elif mid_op == '-':
                 equation = left_number - int(equation)
-            elif mid_op == 'x':
+            elif mid_op == '*':
                 equation = left_number * int(equation)
             elif mid_op == '/':
                 equation = left_number / int(equation)
 
         self.number_display.setText(str(equation))
+        left_number = 0
+        mid_op = ""
+        flag = False
+        stk.append(str(equation))
 
     def button_clear_clicked(self):
         self.number_display.setText("0")
